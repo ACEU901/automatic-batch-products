@@ -13,34 +13,33 @@ import java.util.List;
 
 public class SystemInfoGUI {
 
-    public static void createAndShowGUI() {
-        JFrame frame = new JFrame("Información del Sistema");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 500);
-        frame.setLayout(new BorderLayout());
+    private JTextArea infoArea;
 
-        JTextArea infoArea = new JTextArea();
+    public JPanel crearPanelSistema() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        infoArea = new JTextArea();
         infoArea.setEditable(false);
         infoArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         JScrollPane scrollPane = new JScrollPane(infoArea);
-        frame.add(scrollPane, BorderLayout.CENTER);
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         // Hilo para actualizar la información en tiempo real
         new Thread(() -> {
             while (true) {
-                updateSystemInfo(infoArea);
+                updateSystemInfo();
                 try {
-                    Thread.sleep(1000); // Actualiza cada segundo
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
 
-        frame.setVisible(true);
+        return panel;
     }
 
-    private static void updateSystemInfo(JTextArea info) {
+    private void updateSystemInfo() {
         SystemInfo si = new SystemInfo();
 
         // Sistema Operativo
@@ -52,7 +51,7 @@ public class SystemInfoGUI {
         String processorName = cpu.getProcessorIdentifier().getName();
         int physicalCores = cpu.getPhysicalProcessorCount();
         int logicalCores = cpu.getLogicalProcessorCount();
-        double cpuLoad = cpu.getSystemCpuLoad(1000) * 100; // Se pasa un parámetro en ms
+        double cpuLoad = cpu.getSystemCpuLoad(1000) * 100;
 
         // Memoria RAM
         GlobalMemory memory = si.getHardware().getMemory();
@@ -60,23 +59,27 @@ public class SystemInfoGUI {
         long usedMem = totalMem - memory.getAvailable();
 
         // Disco
-        HWDiskStore disk = si.getHardware().getDiskStores().get(0);
-        long totalDisk = disk.getSize();
-        long usedDisk = disk.getReads() + disk.getWrites(); // Alternativa a getFreeSpace()
+        List<HWDiskStore> disks = si.getHardware().getDiskStores();
+        long totalDisk = 0;
+        long usedDisk = 0;
+        if (!disks.isEmpty()) {
+            HWDiskStore disk = disks.get(0);
+            totalDisk = disk.getSize();
+            usedDisk = disk.getReads() + disk.getWrites();
+        }
 
-        // Interfaces de red activas
+        // Red
         List<NetworkIF> networkIFs = si.getHardware().getNetworkIFs();
         double totalUpload = 0;
         double totalDownload = 0;
         for (NetworkIF net : networkIFs) {
-            if (net.getIfOperStatus().equals(NetworkIF.IfOperStatus.UP)) { // Solo interfaces activas
+            if (net.getIfOperStatus().equals(NetworkIF.IfOperStatus.UP)) {
                 totalUpload += net.getBytesSent();
                 totalDownload += net.getBytesRecv();
             }
         }
 
-        // Mostrar la información en la interfaz gráfica
-        info.setText(
+        String infoTexto =
                 "Sistema Operativo: " + osName + "\n\n" +
                         "Procesador: " + processorName + "\n" +
                         "Núcleos físicos: " + physicalCores + "\n" +
@@ -91,7 +94,21 @@ public class SystemInfoGUI {
 
                         "Red:\n" +
                         String.format("Subida: %.2f MB\n", totalUpload / (1024 * 1024)) +
-                        String.format("Bajada: %.2f MB\n", totalDownload / (1024 * 1024))
-        );
+                        String.format("Bajada: %.2f MB\n", totalDownload / (1024 * 1024));
+
+        infoArea.setText(infoTexto);
+    }
+
+    // Método opcional para pruebas independientes
+    public static void createAndShowGUI() {
+        JFrame frame = new JFrame("Información del Sistema");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 500);
+
+        SystemInfoGUI sistema = new SystemInfoGUI();
+        JPanel panel = sistema.crearPanelSistema();
+        frame.add(panel);
+
+        frame.setVisible(true);
     }
 }
