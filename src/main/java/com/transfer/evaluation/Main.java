@@ -1,12 +1,13 @@
 package com.transfer.evaluation;
 
-import com.transfer.evaluation.gui.MainWindow;
+import com.transfer.evaluation.service.DAO.ProductoDAO;
+import com.transfer.evaluation.service.Producto;
 
-import javax.swing.*;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        try {
+        /*try {
             // Usa el look and feel nativo del sistema operativo
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -15,6 +16,7 @@ public class Main {
 
         MainWindow ventana = new MainWindow();
         ventana.mostrar();
+        */
     }
 }
 
