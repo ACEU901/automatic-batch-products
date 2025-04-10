@@ -18,55 +18,120 @@ public class MainWindow extends JFrame {
     private JProgressBar barraProgreso;
 
     public MainWindow() {
-        setTitle("Transferencia desde Excel a Base de Datos");
+        setTitle("Transferencia de Datos desde Excel");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        setMinimumSize(new Dimension(700, 500));
         initUI();
     }
 
     private void initUI() {
-        setLayout(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(new Color(245, 245, 245)); // Fondo claro
 
-        // Panel superior
-        JPanel panelTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton cargarBtn = new JButton("Cargar archivo Excel/CSV");
-        JButton transferirBtn = new JButton("Iniciar transferencia");
-        JButton eliminarBtn = new JButton("Eliminar archivos generados");
+        // === PANEL SUPERIOR ===
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+        topPanel.setBackground(mainPanel.getBackground());
+
+        JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        botonesPanel.setOpaque(false);
+
+        // Botones con colores personalizados
+        JButton cargarBtn = crearBoton("📂 Cargar archivo", new Color(33, 150, 243));      // Azul
+        JButton transferirBtn = crearBoton("➡️ Iniciar transferencia", new Color(76, 175, 80)); // Verde
+        JButton eliminarBtn = crearBoton("🗑️ Eliminar archivos", new Color(244, 67, 54));      // Rojo
+
+        botonesPanel.add(cargarBtn);
+        botonesPanel.add(transferirBtn);
+        botonesPanel.add(eliminarBtn);
 
         archivoLabel = new JLabel("Ningún archivo seleccionado");
-        labelLeidos = new JLabel("Registros leídos: 0");
-        labelCreados = new JLabel("Registros creados: 0");
+        archivoLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+        archivoLabel.setForeground(Color.DARK_GRAY);
+        archivoLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0));
+
+        topPanel.add(botonesPanel);
+        topPanel.add(archivoLabel);
 
         cargarBtn.addActionListener(e -> seleccionarArchivo());
         transferirBtn.addActionListener(e -> iniciarTransferencia());
         eliminarBtn.addActionListener(e -> eliminarArchivosProcesados());
 
-        panelTop.add(cargarBtn);
-        panelTop.add(transferirBtn);
-        panelTop.add(eliminarBtn);
-        panelTop.add(archivoLabel);
-
-        // Panel inferior
+        // === PANEL INFERIOR ===
         barraProgreso = new JProgressBar();
         barraProgreso.setStringPainted(true);
+        barraProgreso.setForeground(new Color(100, 149, 237));
+        barraProgreso.setPreferredSize(new Dimension(500, 20));
 
-        JPanel panelBottom = new JPanel(new GridLayout(2, 1));
-        panelBottom.add(barraProgreso);
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        bottomPanel.setOpaque(false);
 
-        JPanel resumenPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel resumenPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 5));
+        resumenPanel.setOpaque(false);
+
+        labelLeidos = new JLabel("📥 Registros leídos: 0");
+        labelLeidos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        labelCreados = new JLabel("📤 Registros creados: 0");
+        labelCreados.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
         resumenPanel.add(labelLeidos);
         resumenPanel.add(labelCreados);
-        panelBottom.add(resumenPanel);
 
-        // Panel central
+        bottomPanel.add(Box.createVerticalStrut(10));
+        bottomPanel.add(barraProgreso);
+        bottomPanel.add(Box.createVerticalStrut(10));
+        bottomPanel.add(resumenPanel);
+
+        // === PANEL CENTRAL ===
         SystemInfoGUI infoGUI = new SystemInfoGUI();
         JPanel panelSistema = infoGUI.crearPanelSistema();
+        panelSistema.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY), "Información del Sistema"));
+        panelSistema.setBackground(Color.WHITE);
 
-        add(panelTop, BorderLayout.NORTH);
-        add(panelSistema, BorderLayout.CENTER);
-        add(panelBottom, BorderLayout.SOUTH);
+        // === ENSAMBLADO FINAL ===
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(panelSistema, BorderLayout.CENTER);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+    }
+
+    private JButton crearBoton(String texto, Color colorFondo) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Segoe UI Emoji", Font.BOLD, 14)); // Asegura soporte para emojis
+        boton.setForeground(Color.WHITE);
+        boton.setFocusPainted(false);
+        boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        boton.setBackground(colorFondo);
+        boton.setContentAreaFilled(false);
+        boton.setOpaque(true);
+
+        // Efectos visuales (hover y clic)
+        boton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton.setBackground(colorFondo.brighter());
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton.setBackground(colorFondo);
+            }
+
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                boton.setBackground(colorFondo.darker());
+            }
+
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                boton.setBackground(colorFondo);
+            }
+        });
+
+        return boton;
     }
 
     private void seleccionarArchivo() {
@@ -79,7 +144,7 @@ public class MainWindow extends JFrame {
         int resultado = fileChooser.showOpenDialog(this);
         if (resultado == JFileChooser.APPROVE_OPTION) {
             archivoSeleccionado = fileChooser.getSelectedFile();
-            archivoLabel.setText("Archivo: " + archivoSeleccionado.getName());
+            archivoLabel.setText("📄 Archivo seleccionado: " + archivoSeleccionado.getName());
         }
     }
 
@@ -95,8 +160,8 @@ public class MainWindow extends JFrame {
                 TransferResult resultado = ExcelTransferService.procesarArchivo(copia, barraProgreso);
 
                 SwingUtilities.invokeLater(() -> {
-                    labelLeidos.setText("Registros leídos: " + resultado.getRegistrosLeidos());
-                    labelCreados.setText("Registros creados: " + resultado.getRegistrosCreados());
+                    labelLeidos.setText("📥 Registros leídos: " + resultado.getRegistrosLeidos());
+                    labelCreados.setText("📤 Registros creados: " + resultado.getRegistrosCreados());
                     JOptionPane.showMessageDialog(this, "Transferencia finalizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 });
 
@@ -130,7 +195,6 @@ public class MainWindow extends JFrame {
             }
         }
     }
-
 
     public void mostrar() {
         SwingUtilities.invokeLater(() -> setVisible(true));
