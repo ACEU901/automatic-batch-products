@@ -18,7 +18,8 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>12.4.2.jre17</version> <!-- O la versión que corresponda -->
+            <version>12.10.0.jre11</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -33,10 +34,19 @@
             <version>5.2.3</version>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version> <!-- o la versión más reciente -->
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>3.2</version>
         </dependency>
+
     </dependencies>
 
     <build>
