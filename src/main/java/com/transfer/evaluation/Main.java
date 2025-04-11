@@ -4,6 +4,8 @@ import com.transfer.evaluation.gui.MainWindow;
 
 import javax.swing.*;
 
+import static com.transfer.evaluation.service.CargadorArchivo.cargarArchivo;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -16,6 +18,11 @@ public class Main {
 
         MainWindow ventana = new MainWindow();
         ventana.mostrar();
+
+        /* Prueba de la carga a sql
+        String rutaArchivo = "archivos_procesados/procesados_csv_1744231556528.csv";
+        cargarArchivo(rutaArchivo);
+         */
     }
 }
 
