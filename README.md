@@ -5,6 +5,21 @@ a una base de datos, realizando inserciones por lotes con control dinámico del 
 
 ---
 
+## Crear estructura en Base de datos
+1. En SQL server Crear una BD:
+   CREATE DATABASE AUTOMATIZACION;
+2. Crear una Tabla:
+   CREATE TABLE PRODUCTO (
+   id INT IDENTITY(1,1) PRIMARY KEY,
+   NumSuc FLOAT NOT NULL,
+   Sku VARCHAR(50) NOT NULL,
+   CODBARRA VARCHAR(50) NOT NULL,
+   Descripcion VARCHAR(255),
+   Fam FLOAT,
+   SalFisSuc FLOAT,
+   Valor FLOAT
+   );
+
 ## 🚀 ¿Cómo ejecutar el `.jar`?
 
 1. Asegúrate de tener instalado **Java 21** o una versión compatible que pueda ejecutar archivos `.jar` (en Windows o Unix).
