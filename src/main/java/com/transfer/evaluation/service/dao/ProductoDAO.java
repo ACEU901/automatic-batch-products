@@ -1,4 +1,4 @@
-package com.transfer.evaluation.service.DAO;
+package com.transfer.evaluation.service.dao;
 
 import com.transfer.evaluation.service.Producto;
 

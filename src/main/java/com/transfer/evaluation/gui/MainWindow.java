@@ -1,5 +1,6 @@
 package com.transfer.evaluation.gui;
 
+import com.transfer.evaluation.service.CargadorArchivo;
 import com.transfer.evaluation.service.ExcelTransferService;
 import com.transfer.evaluation.service.TransferResult;
 
@@ -16,6 +17,7 @@ public class MainWindow extends JFrame {
     private JLabel labelCreados;
     private File archivoSeleccionado;
     private JProgressBar barraProgreso;
+    private JProgressBar barraProgresoDb;
 
     public MainWindow() {
         setTitle("Transferencia de Datos desde Excel");
@@ -66,6 +68,11 @@ public class MainWindow extends JFrame {
         barraProgreso.setForeground(new Color(100, 149, 237));
         barraProgreso.setPreferredSize(new Dimension(500, 20));
 
+        barraProgresoDb = new JProgressBar();
+        barraProgresoDb.setStringPainted(true);
+        barraProgresoDb.setForeground(new Color(100, 149, 237));
+        barraProgresoDb.setPreferredSize(new Dimension(500, 20));
+
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -78,12 +85,17 @@ public class MainWindow extends JFrame {
         labelLeidos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         labelCreados = new JLabel("📤 Registros creados: 0");
         labelCreados.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        JLabel labelProgresoArchivo = new JLabel("📊 Procesando archivo...");
+        JLabel labelProgresoDB = new JLabel("💾 Cargando a la base de datos...");
 
         resumenPanel.add(labelLeidos);
         resumenPanel.add(labelCreados);
 
         bottomPanel.add(Box.createVerticalStrut(10));
+        bottomPanel.add(labelProgresoArchivo);
         bottomPanel.add(barraProgreso);
+        bottomPanel.add(labelProgresoDB);
+        bottomPanel.add(barraProgresoDb);
         bottomPanel.add(Box.createVerticalStrut(10));
         bottomPanel.add(resumenPanel);
 
@@ -158,6 +170,8 @@ public class MainWindow extends JFrame {
             try {
                 File copia = ExcelTransferService.copiarArchivo(archivoSeleccionado);
                 TransferResult resultado = ExcelTransferService.procesarArchivo(copia, barraProgreso);
+                CargadorArchivo.cargarArchivo(copia, barraProgresoDb);
+
 
                 SwingUtilities.invokeLater(() -> {
                     labelLeidos.setText("📥 Registros leídos: " + resultado.getRegistrosLeidos());
@@ -170,6 +184,8 @@ public class MainWindow extends JFrame {
                         JOptionPane.showMessageDialog(this, "Error al procesar el archivo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE)
                 );
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }
