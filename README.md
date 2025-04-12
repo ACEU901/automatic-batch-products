@@ -20,6 +20,8 @@ a una base de datos, realizando inserciones por lotes con control dinámico del 
    Valor FLOAT
    );
 
+## Modificar el .env para añadir sus credenciales
+
 ## 🚀 ¿Cómo ejecutar el `.jar`?
 
 1. Asegúrate de tener instalado **Java 21** o una versión compatible que pueda ejecutar archivos `.jar` (en Windows o Unix).
