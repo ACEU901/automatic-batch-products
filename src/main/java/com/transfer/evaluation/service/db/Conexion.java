@@ -1,4 +1,4 @@
-package com.transfer.evaluation.service.dao;
+package com.transfer.evaluation.service.db;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
