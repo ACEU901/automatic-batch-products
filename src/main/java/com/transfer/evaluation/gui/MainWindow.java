@@ -170,7 +170,7 @@ public class MainWindow extends JFrame {
             try {
                 File copia = ExcelTransferService.copiarArchivo(archivoSeleccionado);
                 TransferResult resultado = ExcelTransferService.procesarArchivo(copia, barraProgreso);
-                CargadorArchivo.cargarArchivo(copia, barraProgresoDb);
+                CargadorArchivo.cargarArchivo(resultado.getDestino().toFile(), barraProgresoDb);
 
 
                 SwingUtilities.invokeLater(() -> {

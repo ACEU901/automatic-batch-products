@@ -9,7 +9,7 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.transfer.evaluation.funcion.Performance.validPerformance;
+import static com.transfer.evaluation.funcion.Performance.validPerformanceByFile;
 
 public class ExcelTransferService {
 
@@ -47,7 +47,7 @@ public class ExcelTransferService {
             Integer multiplo = 1000;
             for (int i = 1; i <= total; i++) {
                 if (i % multiplo == 0) {
-                    multiplo = validPerformance(multiplo);
+                    multiplo = validPerformanceByFile(multiplo);
                 }
                 Row fila = hoja.getRow(i);
                 totalLeidos++;
@@ -58,9 +58,9 @@ public class ExcelTransferService {
             }
 
             int cantidad = registrosCompletos.size();
-            escribirNuevoExcel(registrosCompletos.subList(0, cantidad), hoja.getRow(0));
+            Path destino = escribirNuevoExcel(registrosCompletos.subList(0, cantidad), hoja.getRow(0));
 
-            return new TransferResult(totalLeidos, cantidad);
+            return new TransferResult(totalLeidos, cantidad, destino);
         }
     }
 
@@ -74,7 +74,7 @@ public class ExcelTransferService {
         return true;
     }
 
-    private static void escribirNuevoExcel(List<Row> registros, Row encabezado) throws IOException {
+    private static Path escribirNuevoExcel(List<Row> registros, Row encabezado) throws IOException {
         Workbook nuevoWorkbook = new XSSFWorkbook();
         Sheet hoja = nuevoWorkbook.createSheet("Procesados");
 
@@ -91,6 +91,7 @@ public class ExcelTransferService {
             nuevoWorkbook.write(fos);
         }
         nuevoWorkbook.close();
+        return destino;
     }
 
     // ---------------- CSV ----------------
@@ -107,7 +108,7 @@ public class ExcelTransferService {
         for (int i = 0; i < lineas.size(); i++) {
             try {
                 if (i % multiplo == 0) {
-                   multiplo = validPerformance(multiplo);
+                   multiplo = validPerformanceByFile(multiplo);
                 }
                 String lineaCruda = lineas.get(i);
                 String linea = lineaCruda.trim();
@@ -139,9 +140,9 @@ public class ExcelTransferService {
         }
 
         int cantidad = registrosCompletos.size();
-        escribirNuevoCSV(registrosCompletos.subList(0, cantidad), encabezado);
+        Path destino = escribirNuevoCSV(registrosCompletos.subList(0, cantidad), encabezado);
 
-        return new TransferResult(totalLeidos, cantidad);
+        return new TransferResult(totalLeidos, cantidad, destino);
     }
 
     private static boolean esRegistroCompleto(String[] columnas) {
@@ -153,7 +154,7 @@ public class ExcelTransferService {
         return true;
     }
 
-    private static void escribirNuevoCSV(List<String[]> registros, String[] encabezado) throws IOException {
+    private static Path escribirNuevoCSV(List<String[]> registros, String[] encabezado) throws IOException {
         if (encabezado == null) {
             throw new IOException("No se puede escribir CSV: el encabezado es nulo.");
         }
@@ -170,6 +171,7 @@ public class ExcelTransferService {
                 writer.newLine();
             }
         }
+        return destino;
     }
 
 }

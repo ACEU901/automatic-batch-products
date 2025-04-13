@@ -4,7 +4,7 @@ import com.transfer.evaluation.service.SystemMonitor;
 
 public class Performance {
 
-    public static Integer validPerformance(Integer multiplo) throws InterruptedException {
+    public static Integer validPerformanceByFile(Integer multiplo) throws InterruptedException {
         double cpu = SystemMonitor.getCpuUsagePercent();
         double ram = SystemMonitor.getMemoryUsagePercent();
         long latencia = SystemMonitor.getInternetLatencyMs();
