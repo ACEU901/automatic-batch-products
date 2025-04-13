@@ -13,11 +13,11 @@ public class Performance {
         if (cpu > 90 || ram > 90) {
             System.out.println("CPU o RAM > 90%.");
             multiplo = multiploBase;
-            Thread.sleep(10_000);
+            Thread.sleep(8_000);
         } else if (cpu > 80 || ram > 80) {
             System.out.println("CPU o RAM > 80%. Durmiendo 1s...");
             multiplo = multiploBase;
-            Thread.sleep(10_000);
+            Thread.sleep(2_000);
 
         } else if (latencia > 900) {
             System.out.println("Alta latencia (" + latencia + "ms). Durmiendo 3s...");
@@ -45,7 +45,7 @@ public class Performance {
         } else if (cpu > 80 || ram > 80) {
             System.out.println("CPU o RAM > 80%. Durmiendo 1s...");
             multiplo = multiploBase;
-            Thread.sleep(5_000);
+            Thread.sleep(3_000);
 
         } else if (latencia > 900) {
             System.out.println("Alta latencia (" + latencia + "ms). Durmiendo 3s...");
